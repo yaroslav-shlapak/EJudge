@@ -11,8 +11,11 @@ public class PerfectCircle {
         Scanner scanner = new Scanner(System.in);
 
         int radius = scanner.nextInt();
+        /*if(radius < 1) {
+            System.out.println(0);
+            return;
+        }*/
 
-        int square[][] = new int[radius][radius];
         double len;
         int counter = radius * radius;
 
@@ -26,5 +29,6 @@ public class PerfectCircle {
         }
 
         System.out.println(counter * 4);
+
     }
 }
