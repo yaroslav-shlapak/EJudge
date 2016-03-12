@@ -12,6 +12,16 @@ import java.util.Scanner;
 1 0 1 0
 1 1 0 0
 1 0 0 0
+ */
+/*
+7 7 3
+0 1 1 1 0 0 0
+1 0 1 0 0 0 0
+1 1 0 0 0 0 0
+1 0 0 0 1 0 0
+0 0 0 1 0 1 0
+0 0 0 0 1 0 1
+0 0 0 0 0 1 0
 */
 public class BreadthFirstSearch {
 
@@ -28,25 +38,48 @@ public class BreadthFirstSearch {
             for(int j = 0; j < n; j++) {
                 adjacencyMatrix[i][j] = scanner.nextInt();
             }
-            System.out.println(Arrays.toString(adjacencyMatrix[i]));
+            //System.out.println(Arrays.toString(adjacencyMatrix[i]));
         }
 
-        Queue queue = new Queue(100);
 
-        queue.enqueue(3);
 
+        System.out.println(breadthFirstSearch(adjacencyMatrix, n, s, f));
+
+    }
+
+    public static int breadthFirstSearch(int[][] adjacencyMatrix, int n, int s, int f) {
+        Queue queue = new Queue(1000);
+        Queue len = new Queue(1000);
+        int[] used = new int[n];
+        if(s == f)
+            return 0;
+
+        queue.enqueue(s);
+        int result = 0;
+        len.enqueue(1);
         while(!queue.isEmpty()) {
-            int current = queue.dequeue();
 
+            int current = queue.dequeue();
+            int currentCounter = len.dequeue();
+
+            if(used[current - 1] == 1) {
+                continue;
+            }
             for(int i = 0; i < n; i++) {
-                if(adjacencyMatrix[current][i] == 1) {
+                if(adjacencyMatrix[current - 1][i] == 1) {
+                    if(i + 1  == f) {
+                        result = currentCounter;
+                        return result;
+                    }
                     queue.enqueue(i + 1);
+                    len.enqueue(currentCounter + 1);
+                    //queue.display();
                 }
             }
-
+            used[current - 1] = 1;
 
         }
-
+        return result;
     }
 }
 
@@ -74,6 +107,13 @@ class Queue{
             return queue[back++];
         else
             return -1;
+    }
+
+    public void display() {
+        for(int i = back; i < front; i++) {
+            System.out.print(queue[i] + " ");
+        }
+        System.out.println();
     }
 
     public boolean isEmpty() {
