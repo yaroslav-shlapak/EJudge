@@ -40,66 +40,73 @@ public class MountainRoutes {
             //System.out.print(horz + " " + vert + "\n");
             routes[horz][vert] = 1;
         }
-        int[] forbid = new int[n];
-/*
-        for(int i = 0; i < n; i++) {
+
+        System.out.println(depthFirstSearch(n, a, b, d, routes));
+    }
+
+    public static int depthFirstSearch(int n, int a, int b, int d, int[][] routes) {
+
+        /*for(int i = 0; i < n; i++) {
             System.out.println(Arrays.toString(routes[i]));
         }*/
 
         Stack routesStack = new Stack(100);
         Stack daysStack = new Stack(100);
         routesStack.push(a);
-        daysStack.push(0);
+
+        int numberOfDays = 0;
         int counter = 0;
-        while(!routesStack.isEmpty()) {
+        daysStack.push(numberOfDays);
+        int[] visited = new int[n];
+        while (!routesStack.isEmpty()) {
 
+            //routesStack.display();
             int currentHostel = routesStack.pop();
-            System.out.println("currentHostel = " + currentHostel);
-
-            int numberOfDays = daysStack.pop();
+            //System.out.println("currentHostel = " + currentHostel);
+            numberOfDays = daysStack.pop();
+            int stackSize = routesStack.getSize();
             //System.out.println("numberOfDays = " + numberOfDays);
-
-
-            if(currentHostel == b && numberOfDays <= d) {
-                counter++;
-                continue;
-            }
-            if(numberOfDays > d) {
-                continue;
-            }
-
-            for(int i = 0; i < n; i++) {
-                if(routes[currentHostel - 1][i] == 1 && forbid[i] == 0) {
-                    if(numberOfDays + 1 <= d) {
-                        routesStack.push(i + 1);
-                        daysStack.push(numberOfDays + 1);
-                        forbid[i] = 0;
+            if(numberOfDays <= d) {
+                if (currentHostel == b) {
+                    counter++;
+                    //visited = new int[n];
+                    //System.out.println("counter = " + counter);
+                } else {
+                    for (int i = 0; i < n; i++) {
+                        if (routes[currentHostel - 1][i] == 1 && visited[i] == 0) {
+                            routesStack.push(i + 1);
+                            daysStack.push(numberOfDays + 1);
+                        }
                     }
+                    if(stackSize == routesStack.getSize()) {
+                        visited[currentHostel - 1] = 1;
+                        System.out.println(currentHostel);
+                    }
+
                 }
             }
-            System.out.println(Arrays.toString(routesStack.stackArray));
-            forbid[currentHostel - 1] = 1;
-
-            /*for(int i = 0; i < n; i++) {
-                System.out.println(Arrays.toString(routes[i]));
-            }
-            System.out.println("counter = "  + counter);
-            System.out.println(counter);*/
 
         }
-        System.out.println(counter);
+
+        return counter;
     }
 }
 
 class Stack {
     private int maxSize;
-    public int[] stackArray;
+    private int[] stackArray;
     private int top;
 
     public Stack(int s) {
         maxSize = s;
         stackArray = new int[maxSize];
         top = -1;
+    }
+    public void display() {
+        for(int i = 0; i <= top; i++) {
+            System.out.print(stackArray[i] + " ");
+        }
+        System.out.println();
     }
 
     public void push(int j) {
@@ -116,5 +123,9 @@ class Stack {
     }
     public boolean isFull() {
         return (top == maxSize);
+    }
+
+    public int getSize() {
+        return top;
     }
 }

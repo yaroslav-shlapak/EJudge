@@ -81,44 +81,44 @@ public class BreadthFirstSearch {
         }
         return result;
     }
-}
 
-class Queue{
-    private int size;
-    private int front;
-    private int back;
-    private int[] queue;
+    private static class Queue{
+        private int size;
+        private int front;
+        private int back;
+        private int[] queue;
 
-    public Queue(int size) {
-        this.size = size;
-        queue = new int[size];
-        front = 0;
-        back = 0;
-    }
-
-    public void enqueue(int x) {
-        if(front <= size) {
-            queue[front++]=x;
+        public Queue(int size) {
+            this.size = size;
+            queue = new int[size];
+            front = 0;
+            back = 0;
         }
-    }
 
-    public int dequeue() {
-        if(!isEmpty())
-            return queue[back++];
-        else
-            return -1;
-    }
-
-    public void display() {
-        for(int i = back; i < front; i++) {
-            System.out.print(queue[i] + " ");
+        public void enqueue(int x) {
+            if(front <= size) {
+                queue[front++]=x;
+            }
         }
-        System.out.println();
+
+        public int dequeue() {
+            if(!isEmpty())
+                return queue[back++];
+            else
+                return -1;
+        }
+
+        public void display() {
+            for(int i = back; i < front; i++) {
+                System.out.print(queue[i] + " ");
+            }
+            System.out.println();
+        }
+
+        public boolean isEmpty() {
+            return front == back;
+        }
+
+
     }
-
-    public boolean isEmpty() {
-        return front == back;
-    }
-
-
 }
