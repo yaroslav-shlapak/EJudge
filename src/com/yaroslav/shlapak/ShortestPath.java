@@ -1,13 +1,15 @@
 package com.yaroslav.shlapak;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
-import java.util.jar.Pack200;
 
 /**
  * Created by yaroslav on 3/13/16.
  */
 public class ShortestPath {
+    static final int MAX_N = 50000;
+    static final int MAX_M = 100000;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -17,61 +19,76 @@ public class ShortestPath {
         int a = scanner.nextInt(); // start
         int b = scanner.nextInt(); // finish
 
-        int[][] adjacencyMatrix = new  int[n][n];
-        ArrayList<Integer>[] adjacencyList = new ArrayList[n];
-        for (int i = 0; i < n; ++i) {
-            adjacencyList[i] = new ArrayList<>();
-        }
+
+        int[][] adjacencyList = new int[n + 1][n + 1];
+        int[] size = new int[n + 1];
+
         for(int i = 0; i < m; i++) {
             int horz = scanner.nextInt() - 1;
-            int vert = scanner.nextInt();
-            adjacencyList[horz].add(vert);
-            //adjacencyList[vert].add(horz);
+            int vert = scanner.nextInt() - 1;
+            adjacencyList[horz][size[horz]++] = vert + 1;
+            adjacencyList[vert][size[vert]++] = horz + 1;
         }
-        breadthFirstSearch(n, a, b, adjacencyList);
+        breadthFirstSearch(n, a, b, adjacencyList, size);
     }
 
-    private static void breadthFirstSearch(int n, int a, int b, ArrayList<Integer>[] adjacencyList) {
-        int[] path = new int[n * n];
-        int[] visited = new int[n];
+    private static void breadthFirstSearch(int n, int a, int b, int[][] adjacencyList, int[] size) {
+        int[] path = new int[n + 1];
+        int[] shortestPath = new int[n + 1];
+        int[] visited = new int[n + 1];
         int length = 0;
+
         boolean found = false;
-        Queue verticeQueue = new Queue(1000);
+        Queue verticeQueue = new Queue(n + 1);
 
         verticeQueue.enqueue(a);
 
         visited[a - 1] = 1;
 
-        path[length] = a;
+        path[0] = a;
+        path[a - 1] = a;
         while (!verticeQueue.isEmpty()) {
-            verticeQueue.display();
+            //verticeQueue.display();
             int currentVertice = verticeQueue.dequeue();
-            System.out.println("currentVertice = " + currentVertice);
-            //int currentLength = lengthQueue.dequeue();
 
             if(currentVertice == b) {
                 found = true;
+                int x = currentVertice;
+
+                shortestPath[length] = x;
+
+                while(x != a) {
+                    x = path[x - 1];
+                    shortestPath[++length] = x;
+                }
+                //System.out.println(length);
+                //System.out.println(Arrays.toString(shortestPath));
+
+                for(int j = 0; j < length  / 2; j++) {
+                    int temp = shortestPath[length - j];
+                    shortestPath[length - j] = shortestPath[j];
+                    shortestPath[j] = temp;
+                }
+                //System.out.println(Arrays.toString(shortestPath));
                 break;
             }
-            for(int i : adjacencyList[currentVertice - 1]) {
-                System.out.println("i = "  + i);
-                if(visited[i] == 0) {
-                    verticeQueue.enqueue(i);
-                    path[++length] = i;
-                    visited[i - 1] = 1;
+
+            for(int i = 0; i < size[currentVertice - 1]; i++) {
+                int vertice = adjacencyList[currentVertice - 1][i];
+                if(visited[vertice - 1] == 0) {
+                    verticeQueue.enqueue(vertice);
+                    visited[vertice - 1] = 1;
+                    path[vertice  - 1] = currentVertice;
                 }
             }
         }
-
-
-
 
         if(!found) {
             System.out.println(-1);
         } else {
             System.out.println(length);
-            for(int i = 0; i < length; i++) {
-                System.out.print(path[i] + " ");
+            for(int i = 0; i < length + 1; i++) {
+                System.out.print(shortestPath[i] + " ");
             }
         }
 
