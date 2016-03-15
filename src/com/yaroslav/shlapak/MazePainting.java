@@ -6,15 +6,23 @@ import java.util.Scanner;
 /**
  * Created by yarl on 15.03.16.
  */
+/*
+5
+.....
+...##
+..#..
+..###
+.....
+ */
 public class MazePainting {
-    public static final int ADD = 10;
+    public static final int ADD = 0;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
 
         int[][] maze = new int[n + 2][n + 2];
         int[][] checked = new int[n + 2][n + 2];
-        System.out.println(Arrays.toString(maze[0]));
+        //System.out.println(Arrays.toString(checked[0]));
         for(int i = 1; i <= n; i++) {
 
             String s = scanner.next();
@@ -22,9 +30,9 @@ public class MazePainting {
                 maze[i][j] = convertSymbolToNumber(s.charAt(j - 1));
                 checked[i][j] = 1;
             }
-            System.out.println(Arrays.toString(maze[i]));
+           // System.out.println(Arrays.toString(checked[i]));
         }
-        System.out.println(Arrays.toString(maze[n + 1]));
+       // System.out.println(Arrays.toString(checked[n + 1]));
 
         System.out.println(breadthFirstSearch(n, maze, checked));
 
@@ -32,41 +40,58 @@ public class MazePainting {
     }
 
     public static int breadthFirstSearch(int n, int[][] maze, int[][] checked) {
-        Queue queue = new Queue(n + ADD);
+        int len  = n + ADD;
+        len *= len;
+        Queue queue = new Queue(len);
+        boolean isLastFound = false;
         int segmentArea = 9;
+        if(maze[1][1] == 0) {
+            return 0;
+        }
         queue.push(1, 1);
 
-        int[] neighbours = {1, -1};
+        int[] xn = {1, -1, 0, 0};
+        int[] yn = {0, 0, 1, -1};
 
-        checked[1][1] = 0;
         int perimeter = 0;
+        perimeter = bfsLoop(perimeter, queue, isLastFound,  maze, checked, xn, yn, n);
+        if(!isLastFound) {
+            queue.push(n, n);
+            perimeter = bfsLoop(perimeter, queue, isLastFound,  maze, checked, xn, yn, n);
+        }
+
+        return segmentArea * perimeter;
+    }
+
+    public static int bfsLoop(int perimeter, Queue queue, boolean isLastFound, int[][] maze, int[][] checked, int[] xn, int[] yn, int n) {
         while (!queue.isEmpty()) {
             int[] current = queue.pop();
             int y = current[0];
             int x = current[1];
+            //System.out.println("x = " + x + ", y = " + y);
 
-
-            for(int i = 1; i <= n; i++) {
-                if(checked[y][x] == 1 && maze[y][x] == 1) {
-                    for (int yy : neighbours) {
-                        for (int xx : neighbours) {
-                            if (maze[y + yy][x + xx] == 0) {
-                                if(!(y == n && x == n && xx == 1 &&  yy == 1)) {
-                                    perimeter++;
-                                }
-                            }
-
-                            if (maze[y + yy][x + xx] == 1) {
-                                queue.push(y + yy, x + xx);
-                            }
+            if(y == n && x == n) {
+                isLastFound = true;
+            }
+            if (checked[y][x] == 1) {
+                for (int j = 0; j < 4; j++ ) {
+                    int xx = xn[j];
+                    int yy = yn[j];
+                    if (maze[y + yy][x + xx] == 0) {
+                        if (!(((y == n && x == n) && (xx == 1 || yy == 1)) || ((y == 1 && x == 1) && (xx ==  -1 || yy == -1)))) {
+                            perimeter++;
+                            //System.out.println(perimeter);
                         }
+                    }
+                    if (checked[y + yy][x + xx] == 1 && maze[y + yy][x + xx] == 1) {
+                        //System.out.println("x + xx = " + (x + xx) + ", y + yy = " + (y + yy));
+                        queue.push(y + yy, x + xx);
                     }
                 }
                 checked[y][x] = 0;
             }
         }
-
-        return segmentArea * perimeter;
+        return perimeter;
     }
 
     public static int convertSymbolToNumber(char symbol) {
@@ -75,7 +100,7 @@ public class MazePainting {
         } else if(symbol == '.') {
             return 1;
         } else {
-            return -1;
+            return 1;
         }
     }
 
@@ -92,10 +117,11 @@ public class MazePainting {
             back = 0;
         }
 
-        public void push(int x, int y) {
+        public void push(int y, int x) {
             if(back <= size) {
-                queue[front++][1] = x;
-                queue[front++][0] = y;
+                queue[front][1] = x;
+                queue[front][0] = y;
+                front++;
             }
         }
 
@@ -103,7 +129,7 @@ public class MazePainting {
             if(!isEmpty()) {
                 return queue[back++];
             } else {
-                return null;
+                return new int[]{0, 0};
             }
         }
 
