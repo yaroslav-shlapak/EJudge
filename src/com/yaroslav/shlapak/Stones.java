@@ -37,7 +37,7 @@ public class Stones {
     }
 
     public static void recursion(int[] data, int maxNumber, int index, int p, int n) {
-        System.out.println(index);
+        //System.out.println(index);
         if(data[index] > maxNumber) {
             data[index] = 1;
             if(index >= p - 1) {
