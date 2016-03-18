@@ -42,10 +42,36 @@ public class MaximalPrize {
             for(int j = 0; j < len; j++) {
                 if(indices[j] == 0 && data[j] > max) {
                     max = data[j];
-                    index = j + 1;
+                    index = j;
                 }
             }
-            indices[i] = index;
+            indices[index] = i + 1;
+        }
+
+        System.out.println(Arrays.toString(indices));
+        int counter = 1;
+        for(int i = 0; i < k; i++) {
+            for(int j = 0; j < len; j++) {
+                if(indices[i] - 1 == j && indices[j] - 1 == i) {
+
+                    swap(data, i, j);
+                    if(++counter > k) {
+                        System.out.println(getNumber(data));
+                        return;
+                    }
+                    break;
+                } else {
+                    int[] d = getMax(data, i, len);
+                    if (d[0] > data[i]) {
+                        swap(data, i, d[1]);
+                        if(++counter > k) {
+                            System.out.println(getNumber(data));
+                            return;
+                        }
+                    }
+                    break;
+                }
+            }
         }
 
         System.out.println(Arrays.toString(indices));
