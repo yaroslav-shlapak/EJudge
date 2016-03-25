@@ -134,8 +134,20 @@ public class Robots1 {
     }
 
     public static int greatestCommonDivisor(int a, int b) {
+        if (a == 0)
+            return b;
+
+        while (b != 0) {
+            if (a > b)
+                a = a - b;
+            else
+                b = b - a;
+        }
+
+        return a;
+        /*
         if (b==0) return a;
-        return greatestCommonDivisor(b, a%b);
+        return greatestCommonDivisor(b, a%b);*/
     }
 
 }
