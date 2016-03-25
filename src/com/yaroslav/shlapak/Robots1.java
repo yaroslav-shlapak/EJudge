@@ -53,14 +53,15 @@ public class Robots1 {
 
         //System.out.println(dx);
         //System.out.println(dy);
-        int min = dx < dy ? dx : dy;
-        int maxDiv = 0;
+        /*int min = dx < dy ? dx : dy;
+
         for(int i = min; i >= 1; i--) {
             if((dx % i) == 0 && (dy % i) == 0) {
                 maxDiv = i;
                 break;
             }
-        }
+        }*/
+        int maxDiv = greatestCommonDivisor(dx, dy);
         //System.out.println(maxDiv);
         if(maxDiv == 0 || maxDiv == 1) {
             System.out.println(0);
@@ -130,6 +131,11 @@ public class Robots1 {
             }
         }
         System.out.println(res);*/
+    }
+
+    public static int greatestCommonDivisor(int a, int b) {
+        if (b==0) return a;
+        return greatestCommonDivisor(b, a%b);
     }
 
 }

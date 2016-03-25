@@ -25,13 +25,7 @@ public class MaximalPrize {
             data[i] = Integer.parseInt(n.substring(i, i + 1));
         }
 
-        if(k >= len) {
-            k = len;
-            sort(data, k, len);
-            System.out.println(getNumber(data));
-            return;
-        }
-
+/*
         int[] indices = new int[len];
         int[] dataCopy = data.clone();
 
@@ -47,36 +41,96 @@ public class MaximalPrize {
             }
             indices[index] = i + 1;
         }
+        int[] dd = getMax(data, 0, len);
 
-        System.out.println(Arrays.toString(indices));
+
+        int c = 0;
+        int cc = 0;
+
+        for(int i = 0; i < len; i++) {
+            if(data[i] == dd[0]) {
+                c++;
+            }
+        }
+        for(int i = len - 1; i >= 0; i--) {
+            if(c > k && data[i] == dd[0]) {
+                cc++;
+                indices[i]--;
+                if(cc > k) {
+                    indices[i] = k + 1;
+                }
+            }
+
+        }
+
+        //System.out.println(Arrays.toString(indices));
         int counter = 1;
         for(int i = 0; i < k; i++) {
+            boolean flag = false;
             for(int j = 0; j < len; j++) {
+                //System.out.println(indices[i] - 1 == j);
                 if(indices[i] - 1 == j && indices[j] - 1 == i) {
-
                     swap(data, i, j);
+                    flag = true;
                     if(++counter > k) {
                         System.out.println(getNumber(data));
                         return;
                     }
                     break;
                 } else {
-                    int[] d = getMax(data, i, len);
-                    if (d[0] > data[i]) {
-                        swap(data, i, d[1]);
-                        if(++counter > k) {
-                            System.out.println(getNumber(data));
-                            return;
-                        }
-                    }
-                    break;
+
                 }
             }
+            if(flag) {
+                continue;
+            }
+            int[] d = getMax(data, i, len);
+            if (d[0] > data[i]) {
+                swap(data, i, d[1]);
+                if(++counter > k) {
+                    System.out.println(getNumber(data));
+                    return;
+                }
+            }
+            break;
+        }*/
+
+        int[] prev = new int[2];
+        int[] d = new int[2];
+        if(k >= 2) {
+            for(int i = 0; i < k; i++) {
+                prev = d;
+                d = getMax(data, i, len - i);
+                if (d[0] > data[i]) {
+                    swap(data, i, d[1]);
+                    d[1] = i;
+                }
+            }
+            if(data[prev[1]] > data[d[1]] && prev[1] > d[1] ||
+                    data[prev[1]] < data[d[1]] && prev[1] < d[1]) {
+                swap(data, prev[1], d[1]);
+            }
+            System.out.println(getNumber(data));
+            return;
         }
 
-        System.out.println(Arrays.toString(indices));
+        if(k >= len) {
+            k = len;
+            sort(data, k, len);
+            System.out.println(getNumber(data));
+            return;
+        }
 
+        if(k == 1) {
+            sort(data, k, len);
+            System.out.println(getNumber(data));
+            return;
+        }
+
+        sort(data, k, len);
         System.out.println(getNumber(data));
+        return;
+
     }
 
     public static void sort(int[] data, int k, int len) {
@@ -117,12 +171,16 @@ public class MaximalPrize {
     public static int[] getMax(int[] data, int start, int end) {
         int max = 0;
         int index = 0;
-        for(int i = start; i < end; i++) {
+        for(int i = end - 1; i >= start; i--) {
+            //System.out.println(data[i]);;
             if(data[i] > max) {
+
                 max = data[i];
+
                 index = i;
             }
         }
+
         return new int[]{max, index};
     }
 
