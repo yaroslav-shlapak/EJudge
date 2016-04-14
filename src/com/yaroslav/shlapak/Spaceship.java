@@ -67,7 +67,7 @@ public class Spaceship {
             xx = x + moves[i][0];
             yy = y + moves[i][1];
             if(xx > 0 && xx < 101 && yy > 0 && yy < 101) {
-                if((visited[yy][xx][0] == 0 || visited[yy][xx][0] <= distance)&& distance + 1 <= minLength) {
+                if(visited[yy][xx][0] == 0 && distance + 1 <= minLength) {
                     visited[yy][xx][0] = distance + 1;
                     queue.push(xx, yy, distance + 1, portal);
                 }
@@ -78,20 +78,20 @@ public class Spaceship {
             for(int i = 1; i < size + 1; i++) {
                 int index = field[y][x][i];
 
-                    int tempDist = distance + portals[index][4];
+                int tempDist = distance + portals[index][4];
 
-                    if (portals[index][0] == x && portals[index][1] == y) {
-                        xx = portals[index][2];
-                        yy = portals[index][3];
-                    } else {
-                        xx = portals[index][0];
-                        yy = portals[index][1];
-                    }
-                    if (tempDist <= minLength && visited[yy][xx][0] <= tempDist) {
-                        visited[yy][xx][0] = tempDist;
-                        queue.push(xx, yy, tempDist, index);
+                if (portals[index][0] == x && portals[index][1] == y) {
+                    xx = portals[index][2];
+                    yy = portals[index][3];
+                } else {
+                    xx = portals[index][0];
+                    yy = portals[index][1];
+                }
+                if (tempDist <= minLength && visited[yy][xx][0] <= tempDist) {
+                    visited[yy][xx][0] = tempDist;
+                    queue.push(xx, yy, tempDist, index);
                         /*visited[yy][xx] = 1;*/
-                    }
+                }
 
             }
         }
