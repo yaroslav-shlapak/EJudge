@@ -1,6 +1,7 @@
-package com.yaroslav.shlapak;
+//package com.yaroslav.shlapak;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -12,9 +13,8 @@ public class Fairylnand {
     private static int[] visited;
     private static int[] result;
     private static boolean done = false;
-    private static int tempSum;
+    private static int minSize = (int) 10e9;
 
-    private static int minNumber = (int) 10e9;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -24,15 +24,17 @@ public class Fairylnand {
         coins = new int[m + 10];
         visited = new int[m + 10];
         result = new int[m + 10];
+
+
         for(int i = 0; i < m; i++) {
             coins[i] = scanner.nextInt();
         }
-
-        solve(0, 0);
+        Arrays.sort(coins, 0, m);
+        solve(0, 0, 0);
 
         if(done) {
-            System.out.println(minNumber);
-            for(int i = 0; i < minNumber; i++) {
+            System.out.println(minSize);
+            for(int i = 0; i < minSize; i++) {
                 System.out.print(result[i] + " ");
             }
             return;
@@ -44,13 +46,14 @@ public class Fairylnand {
             System.out.println(0);
         }
     }
-    private static void solve(int sum, int size) {
-        if(sum > n) {
+    private static void solve(int index, int sum, int size) {
+
+        if(size >= minSize) {
             return;
         }
-        if(sum == n && size < minNumber) {
+        if(sum == n) {
+            minSize = size;
             done = true;
-            minNumber = size;
             int j = 0;
             for(int i = 0; i < m; i++) {
                 if(visited[i] == 1) {
@@ -65,24 +68,15 @@ public class Fairylnand {
             }
             return;
         }
-        int tempSum;
-        for(int i = 0; i < m; i++) {
-            if(visited[i] == 0) {
-                tempSum = sum + coins[i];
-                if (tempSum <= n) {
-                    visited[i] = 1;
-                    System.out.println(coins[i] + " "  + tempSum);
-                    solve(tempSum, size + 1);
-                }
-                tempSum = sum + coins[i] * 2;
-                if (tempSum <= n) {
-                    visited[i] = 2;
-                    System.out.println(coins[i] + " "  + tempSum);
-                    solve(tempSum, size + 2);
-                }
-                visited[i] = 0;
-            }
 
+        if(index >= m) {
+            return;
+        }
+
+        for(int i = 0; i <= 2; i++) {
+            visited[index] = i;
+            //System.out.println(coins[i]);
+            solve(index + 1, sum + coins[index] * i, size + i);
         }
     }
 
